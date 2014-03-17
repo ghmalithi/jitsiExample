@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dependencies>
+   <includePath signature="">
+      <source file="../screencapture/org_jitsi_impl_neomedia_imgstreaming_ScreenCapture.c" lastModified="144cf3d29c0">
+         <include file="../screencapture/org_jitsi_impl_neomedia_imgstreaming_ScreenCapture.h"/>
+         <sysinclude file="../../../../../../../../usr/include/stdint.h"/>
+         <sysinclude file="../../../../../../../../usr/include/stdio.h"/>
+         <sysinclude file="../../../../../../../../usr/include/stdlib.h"/>
+         <sysinclude file="../../../../../../../../usr/include/string.h"/>
+         <sysinclude file="../../../../../../../../usr/include/X11/Xlib.h"/>
+         <sysinclude file="../../../../../../../../usr/include/X11/Xutil.h"/>
+         <sysinclude file="../../../../../../../../usr/include/X11/extensions/XShm.h"/>
+      </source>
+   </includePath>
+</dependencies>
