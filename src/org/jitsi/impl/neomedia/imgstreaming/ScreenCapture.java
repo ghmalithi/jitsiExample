@@ -18,7 +18,7 @@ package org.jitsi.impl.neomedia.imgstreaming;
  */
 public class ScreenCapture
 {
-   // private static final Logger logger = Logger.getLogger(ScreenCapture.class);
+   
 
     static
     {
@@ -86,4 +86,7 @@ public class ScreenCapture
             int x, int y, int width, int height,
             byte output[]);
     
+    
+    public static native WindowAttributes getWindowAttributes(int display,int window);
+
 }

@@ -370,9 +370,11 @@ static void XListWindows(Display *display, const Window window)
     XTextProperty windowname;
     XWindowAttributes wattr;
 
-    if(XGetWMName(display, window, &windowname) != 0){
+    if(XGetWMName(display, window, &windowname) != 0)
+    {
             XGetWindowAttributes(display,window,&wattr);
-            if(wattr.map_state==IsViewable){
+            if(wattr.map_state==IsViewable)
+            {
                 fprintf(stderr,"0x%x      : %s\n",window,windowname.value);
                 
             }
@@ -876,10 +878,12 @@ Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCapture_grabScreen__IIIIIJI
 
 JNIEXPORT jboolean JNICALL 
 Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCapture_printAvailableWindowNames
-  (JNIEnv *env, jclass clazz, jint displayIndex){
+  (JNIEnv *env, jclass clazz, jint displayIndex)
+{
  
   
-  if(x11_print_available_windows(displayIndex)==-1){
+  if(x11_print_available_windows(displayIndex)==-1)
+  {
     return JNI_FALSE;
   }
 
@@ -890,7 +894,8 @@ Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCapture_printAvailableWindowName
 
 JNIEXPORT jboolean JNICALL 
 Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCapture_grabWindow
-(JNIEnv* env, jclass clazz, jint display,jint windowid, jint x, jint y, jint width, jint height, jbyteArray output){
+(JNIEnv* env, jclass clazz, jint display,jint windowid, jint x, jint y, jint width, jint height, jbyteArray output)
+{
 
   jint size = width * height * 4;
   jbyte* data = NULL;
@@ -922,3 +927,11 @@ Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCapture_grabWindow
 }
 
 
+JNIEXPORT jobject JNICALL Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCapture_getWindowAttributes
+  (JNIEnv* env, jclass clazz, jint display,jint windowid)
+{
+    
+    
+    
+    
+}
