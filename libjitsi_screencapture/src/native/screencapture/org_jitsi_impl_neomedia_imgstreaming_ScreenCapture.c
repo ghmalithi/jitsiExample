@@ -363,6 +363,17 @@ static int quartz_grab_screen(jbyte* data, unsigned int display, int x, int y, i
 #else /* Unix */
 
 
+/**
+ * \brief List X windows by recursively looking at child windows.
+ * \param display current Display
+ * \param window required window id
+ * 
+ * 
+ * This method is influenced from  
+ * http://bisqwit.iki.fi/source/xgetimage.html-> xgetimage-1.5.0 -> x.cc -> XListWindows() 
+ * method. Since it prints a lot of unwanted windows, I have made a little modification using 
+ * XGetWindowAttributes() to filter most of them out.
+ */
 static void XListWindows(Display *display, const Window window)
 {
     unsigned int num_children;
@@ -420,10 +431,11 @@ static int x11_print_available_windows(int displayIndex)
   
   XListWindows(display,root_window);
   
-  
 }
 
 
+/*Used the same x11_grab_screen() implementation with windowid as a new parameter to specify the window, other than
+ using root window*/
 static int x11_grab_window(jbyte* data, unsigned int displayIndex, int windowId, int x, int y, int w, int h)
 {
 
@@ -819,7 +831,7 @@ Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCapture_grabScreen__IIIII_3B
 #if defined (_WIN32) || defined(_WIN64)
   if(windows_grab_screen(data, display, x, y, width, height) == -1)
 #elif defined(__APPLE__)
-    if(quartz_grab_screen(data, display, x, y, width, height) == -1)
+  if(quartz_grab_screen(data, display, x, y, width, height) == -1)
 #else /* Unix */
   if(x11_grab_screen(data, display, x, y, width, height) == -1)
 #endif
@@ -863,7 +875,7 @@ Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCapture_grabScreen__IIIIIJI
 #if defined (_WIN32) || defined(_WIN64)
   if(windows_grab_screen(data, display, x, y, width, height) == -1)
 #elif defined(__APPLE__)
-    if(quartz_grab_screen(data, display, x, y, width, height) == -1)
+  if(quartz_grab_screen(data, display, x, y, width, height) == -1)
 #else /* Unix */
   if(x11_grab_screen(data, display, x, y, width, height) == -1)
 #endif
@@ -881,8 +893,15 @@ Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCapture_printAvailableWindowName
   (JNIEnv *env, jclass clazz, jint displayIndex)
 {
  
-  
+#if defined (_WIN32) || defined(_WIN64)
+  /*not implemented*/
+  if(false)
+#elif defined(__APPLE__)
+  /*not implemented*/
+  if(false)
+#else /* Unix */
   if(x11_print_available_windows(displayIndex)==-1)
+#endif
   {
     return JNI_FALSE;
   }
@@ -913,9 +932,16 @@ Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCapture_grabWindow
   {
     return JNI_FALSE;
   }
-
-
+ 
+#if defined (_WIN32) || defined(_WIN64)
+  /*not implemented*/
+  if(false)
+#elif defined(__APPLE__)
+  /*not implemented*/
+  if(false)
+#else /* Unix */
   if(x11_grab_window(data, display,windowid, x, y, width, height) == -1)
+#endif
   {
     (*env)->ReleasePrimitiveArrayCritical(env, output, data, 0);
     return JNI_FALSE;
@@ -931,7 +957,37 @@ JNIEXPORT jobject JNICALL Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCaptur
   (JNIEnv* env, jclass clazz, jint display,jint windowid)
 {
     
+    int width=0,height=0;
     
+    jclass cls = (*env)->FindClass(env,"org/jitsi/impl/neomedia/imgstreaming/WindowAttributes");
     
-    
+    if(cls!=NULL)
+    {        
+        jmethodID midConstructor = (*env)->GetMethodID(env, cls, "<init>", "(III)V");
+        
+        if(midConstructor!=NULL)
+        {     
+            
+#if defined (_WIN32) || defined(_WIN64)
+            /*not implemented*/
+#elif defined(__APPLE__)
+            /*not implemented*/
+#else /* Unix */
+            
+#endif      
+            jobject windowattrib = (*env)->NewObject(env, cls, midConstructor,windowid,width,height);
+            return windowattrib;
+        }
+        else
+        {
+            fprintf(stderr,"Method Not Found Error : org/jitsi/impl/neomedia/imgstreaming/WindowAttributes.<init>::(III)V");   
+            return NULL;
+        }
+    }
+    else
+    {
+        fprintf(stderr,"Class Not Found Error : org/jitsi/impl/neomedia/imgstreaming/WindowAttributes");   
+        return NULL;
+    }
+
 }

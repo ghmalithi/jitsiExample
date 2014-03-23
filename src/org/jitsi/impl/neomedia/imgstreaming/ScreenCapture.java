@@ -91,8 +91,7 @@ public class ScreenCapture
      * @param height capture height
      * @param output native output buffer to store screen bytes
      * @return true if grab success, false otherwise
-     */
-    
+     */  
     public static native boolean grabWindow(
             int display,int window,
             int x, int y, int width, int height,
