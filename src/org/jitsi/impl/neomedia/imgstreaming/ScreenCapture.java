@@ -18,7 +18,6 @@ package org.jitsi.impl.neomedia.imgstreaming;
  */
 public class ScreenCapture
 {
-   
 
     static
     {

@@ -29,9 +29,7 @@ public class Sample1
         ColorModel cm = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[]{8, 8, 8}, false, false, Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
         return new BufferedImage(cm, Raster.createInterleavedRaster(buffer, width, height, width * 3, 3, new int[]{0, 1, 2}, null), false, null);
     }
-    
-
-    
+ 
     public static boolean printRootScreenToImage(int x,int y,int width,int height,String imagename)
     {
         
@@ -51,7 +49,7 @@ public class Sample1
               rgb[index--] = output[i - 2];
             }
 
-              OutputStream stream;
+            OutputStream stream;
 
             try 
             {
@@ -66,23 +64,18 @@ public class Sample1
                 Logger.getLogger(Sample1.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
             }   
-
         }    
         else
         {
             return false;
         }
     }   
-    
-    
-    
+      
     public static boolean printWindowToImage(int window,int x,int y,int width,int height,String imagename)
     {
         
         byte[] output=new byte[width*height*4];
         boolean b= ScreenCapture.grabWindow(0,window, x, y, width, height, output);
-        
-        
         
         if(b)
         {
@@ -125,16 +118,13 @@ public class Sample1
 
         Scanner s=new Scanner(System.in);
         
-        System.out.println("List of names of windows\n");
-        
+        System.out.println("List of names of windows\n");       
         System.out.println("Window Id\tTitle");
         System.out.println("--------------------------------------------");
         
         ScreenCapture.printAvailableWindowNames(0);
 
-        System.out.println("--------------------------------------------");
-        
-        
+        System.out.println("--------------------------------------------");       
         System.out.print("\nPlease enter the Window ID you want to take the screen shot :");       
         String id=s.next();
         
@@ -142,24 +132,15 @@ public class Sample1
         int width=s.nextInt();
         System.out.print("Height :");
         int height=s.nextInt();
-        
-        
+                
         id = id.startsWith("0x") ? id.substring(2) : id;
-        
-        
-        
+              
         if(printWindowToImage(Integer.parseInt(id,16),0,0,width,height,"output.bmp"))
         {
             System.out.println("Print screen success.");
         }else
         {
             System.out.println("Print screen failed.");
-        }
-        
-        
-        
-    }
-    
-    
-    
+        }               
+    }   
 }

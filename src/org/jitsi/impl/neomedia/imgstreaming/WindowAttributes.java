@@ -18,6 +18,5 @@ public class WindowAttributes
     public WindowAttributes(int a) {
         this.a = a;
     }
-    
-    
+        
 }
