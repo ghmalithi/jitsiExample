@@ -81,5 +81,9 @@ public class ScreenCapture
             int display);
     
     
+    public static native boolean grabWindow(
+            int display,int window,
+            int x, int y, int width, int height,
+            byte output[]);
     
 }

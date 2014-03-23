@@ -363,6 +363,36 @@ static int quartz_grab_screen(jbyte* data, unsigned int display, int x, int y, i
 #else /* Unix */
 
 
+static void XListWindows(Display *display, const Window window)
+{
+    unsigned int num_children;
+    Window *children, child;
+    XTextProperty windowname;
+    XWindowAttributes wattr;
+
+    if(XGetWMName(display, window, &windowname) != 0){
+            XGetWindowAttributes(display,window,&wattr);
+            if(wattr.map_state==IsViewable){
+                fprintf(stderr,"0x%x      : %s\n",window,windowname.value);
+                
+            }
+    }
+    
+    if(XQueryTree(display, window, &child, &child, &children, &num_children))
+    {
+        unsigned i;
+        for(i=0; i < num_children; ++i)
+        {
+            /* Search each child and their children. */
+            XListWindows(display, children[i]);
+        }
+        if (children != (Window *)NULL)
+            XFree((void *)children);
+    }
+}
+
+
+
 static int x11_print_available_windows(int displayIndex)
 {
 
@@ -383,36 +413,187 @@ static int x11_print_available_windows(int displayIndex)
     /* fprintf(stderr, "Cannot open X11 display!\n"); */
     return -1;
   }
-  
-  screen = DefaultScreen(display);
+
   root_window = RootWindow(display, screen);
+  
+  XListWindows(display,root_window);
+  
+  
+}
 
 
-    unsigned int num_children;
-    Window *children, child;
-    XTextProperty windowname;
 
-    if(XQueryTree(display, root_window, &child, &child, &children, &num_children))
+static int x11_grab_window(jbyte* data, unsigned int displayIndex, int windowId, int x, int y, int w, int h)
+{
+
+  const char* display_str; /* display string */
+  Display* display = NULL; /* X11 display */
+  Visual* visual = NULL;
+  int screen = 0; /* X11 screen */
+  Window window = 0;
+  int width = 0;
+  int height = 0;
+  int depth = 0;
+  int shm_support = 0;
+  XImage* img = NULL;
+  XShmSegmentInfo shm_info;
+  size_t off = 0;
+  int i = 0;
+  int j = 0;
+  size_t size = 0;
+  uint32_t test = 1;
+  int little_endian = *((uint8_t*)&test);
+  char buf[16];
+  
+  snprintf(buf, sizeof(buf), ":0.%u", displayIndex);
+  display_str = buf;
+
+  /*fprintf(stderr, display_str);
+  fprintf(stderr, "\n");*/
+
+
+  /* open current X11 display */
+  display = XOpenDisplay(display_str);
+
+  if(!display)
+  {
+    /* fprintf(stderr, "Cannot open X11 display!\n"); */
+    return -1;
+  }
+
+
+  screen = DefaultScreen(display);
+  window = windowId;
+  visual = DefaultVisual(display, screen);
+  width = DisplayWidth(display, screen);
+  height = DisplayHeight(display, screen);
+  depth = DefaultDepth(display, screen);
+
+  
+  XTextProperty winname;
+  XGetWMName(display, window, &winname);
+  fprintf(stderr,"Getting snapshot of of window named : %s \n",winname.value);
+
+  
+  /* check that user-defined parameters are in image */
+  if((w + x) > width || (h + y) > height)
+  {
+    XCloseDisplay(display);
+    return -1;
+  }
+
+  size = w * h;
+
+  /* test is XServer support SHM */
+  shm_support = XShmQueryExtension(display);
+
+  //fprintf(stderr, "Display=%s width=%d height=%d depth=%d SHM=%s\n", display_str, width, height, depth, shm_support ? "true" : "false"); 
+  
+  if(shm_support)
+  {
+    // fprintf(stderr, "Use XShmGetImage\n"); 
+
+    /* create image for SHM use */
+
+    img = XShmCreateImage(display, visual, depth, ZPixmap, NULL, &shm_info, w, h);
+
+    if(!img)
     {
-        unsigned i,j=0;
-        for(i=0; i < num_children; ++i)
-        {
-		if(XGetWMName(display, children[i], &windowname) != 0){
-			j++;
-        		printf("%d :  '%s'\n",j,(const char *)windowname.value);
-		}
-        }
-
-	
-        if (children != (Window *)NULL)
-            XFree((void *)children);
-		
-	return 0;
-
-    }else{
-
-    	return -1;
+      /* fprintf(stderr, "Image cannot be created!\n"); */
+      XCloseDisplay(display);
+      return -1;
     }
+
+    /* setup SHM stuff */
+    shm_info.shmid = shmget(IPC_PRIVATE, img->bytes_per_line * img->height, IPC_CREAT | 0777);
+    shm_info.shmaddr = (char*)shmat(shm_info.shmid, NULL, 0);
+    img->data = shm_info.shmaddr;
+    shmctl(shm_info.shmid, IPC_RMID, NULL);
+    shm_info.readOnly = 0;
+
+    /* attach segment and grab screen */
+    if((shm_info.shmaddr == (void*)-1) || !XShmAttach(display, &shm_info))
+    {
+       fprintf(stderr, "Cannot use shared memory!\n");
+      if(shm_info.shmaddr != (void*)-1)
+      {
+        shmdt(shm_info.shmaddr);
+      }
+
+      img->data = NULL;
+      XDestroyImage(img);
+      img = NULL;
+      shm_support = 0;
+    }
+    //else if(!XShmGetImage(display, ww, img, x, y, 0xffffffff))
+    else if(!XShmGetImage(display, window, img, 0, 0, AllPlanes))
+    {
+
+      fprintf(stderr, "Cannot grab image!\n");
+      XShmDetach(display, &shm_info);
+      shmdt(shm_info.shmaddr);
+      XDestroyImage(img);
+      img = NULL;
+      shm_support = 0;
+    }
+  }
+
+  /* if XSHM is not available or has failed 
+   * use XGetImage
+   */
+  if(!img)
+  {
+
+    fprintf(stderr, "Use XGetImage\n");
+    //img = XGetImage(display, root_window, x, y, w, h, 0xffffffff, ZPixmap);
+    img = XGetImage(display, window, x, y, w, h, AllPlanes, XYPixmap);
+    printf("XGetImage done");
+    if(!img)
+    {
+      /* fprintf(stderr, "Cannot grab image!\n"); */
+      XCloseDisplay(display);
+      return -1;
+    }
+  }
+
+  /* convert to bytes but keep ARGB */
+  for(j = 0 ; j < h ; j++)
+  {
+    for(i = 0 ; i < w ; i++)
+    {
+      /* do not care about high 32-bit for Linux 64 bit 
+       * machine (sizeof(unsigned long) = 8)
+       */
+      uint32_t pixel = (uint32_t)XGetPixel(img, i, j) | (0xff << 24);
+      
+      /* Java int is always big endian so output as ARGB */
+      if(little_endian)
+      {
+        /* ARGB is BGRA in little-endian */
+        uint8_t r = (pixel >> 16) & 0xff;
+        uint8_t g = (pixel >> 8) & 0xff;
+        uint8_t b = pixel & 0xff;
+        pixel = b << 24 | g << 16 | r << 8 | 0xff;
+      }
+      
+      memcpy(data + off, &pixel, 4);
+      off += 4;
+    }
+  }
+
+  /* free X11 resources and close display */
+  XDestroyImage(img);
+  
+  if(shm_support)
+  {
+    XShmDetach(display, &shm_info);
+    shmdt(shm_info.shmaddr);
+  }
+
+  XCloseDisplay(display);
+
+  /* return array */
+  return 0;
 }
 
 
@@ -708,6 +889,39 @@ Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCapture_printAvailableWindowName
    
 }
 
+
+JNIEXPORT jboolean JNICALL 
+Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCapture_grabWindow
+(JNIEnv* env, jclass clazz, jint display,jint windowid, jint x, jint y, jint width, jint height, jbyteArray output){
+
+  jint size = width * height * 4;
+  jbyte* data = NULL;
+
+  clazz = clazz; /* not used */
+
+  if(!output || (*env)->GetArrayLength(env, output) < size)
+  {
+    return JNI_FALSE;
+  }
+
+  data = (*env)->GetPrimitiveArrayCritical(env, output, 0);
+
+  if(!data)
+  {
+    return JNI_FALSE;
+  }
+
+
+  if(x11_grab_window(data, display,windowid, x, y, width, height) == -1)
+  {
+    (*env)->ReleasePrimitiveArrayCritical(env, output, data, 0);
+    return JNI_FALSE;
+  }
+
+  (*env)->ReleasePrimitiveArrayCritical(env, output, data, 0);
+  return JNI_TRUE;
+
+}
 
 
 

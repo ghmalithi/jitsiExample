@@ -17,6 +17,7 @@ import java.awt.image.Raster;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -72,21 +73,65 @@ public class JitsiScreenCaptureExample {
         }
     }
     
+     public static boolean printWindowToImage(int window,int x,int y,int width,int height,String imagename){
+        
+        byte[] output=new byte[width*height*4];
+        boolean b= ScreenCapture.grabWindow(0,window, x, y, width, height, output);
+        
+        if(b){
+        byte[] rgb = new byte[(output.length / 4) * 3];
+
+        int index = rgb.length - 1;
+
+        for (int i = output.length - 1; i >= 0; i -= 4) {
+          rgb[index--] = output[i];
+          rgb[index--] = output[i - 1];
+          rgb[index--] = output[i - 2];
+        }
+        
+          OutputStream stream;
+        
+        try {
+            BufferedImage image =createRGBImage(rgb,width,height);            
+            stream = new FileOutputStream(imagename);
+            ImageIO.write(image, "BMP", stream);
+            stream.close();
+            return true;
+        }
+        catch (IOException ex) {
+            Logger.getLogger(JitsiScreenCaptureExample.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+        
+        }else{
+            return false;
+        }
+    }
     
     public static void main(String[] args) {
 
+        System.out.println("List of names of windows\n");
         
-        if(printRootScreenToImage(100,50,300,300,"abc.bmp")){
+        System.out.println("Window Id\tTitle");
+        System.out.println("--------------------------------------------");
+        
+        ScreenCapture.printAvailableWindowNames(0);
+
+        System.out.println("--------------------------------------------");
+        
+        if(printWindowToImage(0x4c000a9,0,0,1,1,"abc.bmp")){
             System.out.println("Print screen success.");
         }else{
             System.out.println("Print screen failed.");
         }
         
-        System.out.println("\nList of names of windows :");
-        
-        ScreenCapture.printAvailableWindowNames(0);
         
         
+        Scanner s=new Scanner(System.in);
+        
+        s.nextInt();
+        
+        //ScreenCapture.grabWindow(0, 12, 0, 0, 100, 100, new byte[22]);
         
     }
     
