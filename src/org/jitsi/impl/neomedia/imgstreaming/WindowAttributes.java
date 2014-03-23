@@ -2,7 +2,7 @@
 
 package org.jitsi.impl.neomedia.imgstreaming;
 
-/**Not implemented yet
+/**Class that holds attributes of a Window
  *
  * @author malintha
  */

@@ -98,9 +98,14 @@ public class ScreenCapture
             byte output[]);
     
     
-    /**
-     * Not implemented yet.
-     */
+   /**
+     * Get attributes of a specific Window as a <tt>WindowAttributes</tt> Object.
+     *
+     * @param display index of display
+     * @param window id of window
+
+     * @return <tt>WindowAttribute</tt> Object containing attributes of the Window
+     */  
     public static native WindowAttributes getWindowAttributes(int display,int window);
 
 }

@@ -886,8 +886,13 @@ Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCapture_grabScreen__IIIIIJI
   return JNI_TRUE;
 }
 
-
-
+/**
+ * \brief JNI native method to print available window ids with their names
+ * \param env JVM environment
+ * \param clazz ScreenCapture Java class
+ * \param displayIndex display index
+ * \return true if success, false otherwise
+ */
 JNIEXPORT jboolean JNICALL 
 Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCapture_printAvailableWindowNames
   (JNIEnv *env, jclass clazz, jint displayIndex)
@@ -911,6 +916,19 @@ Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCapture_printAvailableWindowName
 }
 
 
+/**
+ * \brief JNI native method to grab a specific window and retrieve ARGB pixels.
+ * \param env JVM environment
+ * \param clazz ScreenCapture Java class
+ * \param display display index
+ * \param windowid id of the window
+ * \param x x position to start capture
+ * \param y y position to start capture
+ * \param width capture width
+ * \param height capture height
+ * \param output native output buffer
+ * \return true if success, false otherwise
+ */
 JNIEXPORT jboolean JNICALL 
 Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCapture_grabWindow
 (JNIEnv* env, jclass clazz, jint display,jint windowid, jint x, jint y, jint width, jint height, jbyteArray output)
@@ -953,6 +971,14 @@ Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCapture_grabWindow
 }
 
 
+/**
+ * \brief JNI native method to get attributes of a specific window and return as WindowAttributes Object.
+ * \param env JVM environment
+ * \param clazz ScreenCapture Java class
+ * \param display display index
+ * \param windowid id of the window
+ * \return WindowAttributes Object if success, NULL otherwise
+ */
 JNIEXPORT jobject JNICALL Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCapture_getWindowAttributes
   (JNIEnv* env, jclass clazz, jint display,jint windowid)
 {
