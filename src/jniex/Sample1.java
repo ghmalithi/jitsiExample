@@ -21,13 +21,14 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.text.html.HTML;
 import org.jitsi.impl.neomedia.imgstreaming.ScreenCapture;
 
 /**
  *
  * @author malintha
  */
-public class JitsiScreenCaptureExample {
+public class Sample1 {
 
     
     private static BufferedImage createRGBImage(byte[] bytes, int width, int height) {
@@ -64,7 +65,7 @@ public class JitsiScreenCaptureExample {
             return true;
         }
         catch (IOException ex) {
-            Logger.getLogger(JitsiScreenCaptureExample.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Sample1.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
         
@@ -99,7 +100,7 @@ public class JitsiScreenCaptureExample {
             return true;
         }
         catch (IOException ex) {
-            Logger.getLogger(JitsiScreenCaptureExample.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Sample1.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
         
@@ -110,6 +111,8 @@ public class JitsiScreenCaptureExample {
     
     public static void main(String[] args) {
 
+        Scanner s=new Scanner(System.in);
+        
         System.out.println("List of names of windows\n");
         
         System.out.println("Window Id\tTitle");
@@ -119,17 +122,27 @@ public class JitsiScreenCaptureExample {
 
         System.out.println("--------------------------------------------");
         
-        if(printWindowToImage(0x4c000a9,0,0,1,1,"abc.bmp")){
+        
+        System.out.print("\nPlease enter the Window ID you want to take the screen shot :");       
+        String id=s.next();
+        
+        System.out.print("Width :");
+        int width=s.nextInt();
+        System.out.print("Height :");
+        int height=s.nextInt();
+        
+        
+        id = id.startsWith("0x") ? id.substring(2) : id;
+        
+        
+        
+        if(printWindowToImage(Integer.parseInt(id,16),0,0,width,height,"output.bmp")){
             System.out.println("Print screen success.");
         }else{
             System.out.println("Print screen failed.");
         }
         
         
-        
-        Scanner s=new Scanner(System.in);
-        
-        s.nextInt();
         
         //ScreenCapture.grabWindow(0, 12, 0, 0, 100, 100, new byte[22]);
         

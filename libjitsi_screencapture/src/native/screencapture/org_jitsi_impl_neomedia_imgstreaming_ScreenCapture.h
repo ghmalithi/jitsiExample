@@ -39,6 +39,22 @@ JNIEXPORT jboolean JNICALL Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCaptu
 JNIEXPORT jboolean JNICALL Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCapture_grabWindow
   (JNIEnv *, jclass, jint, jint, jint, jint, jint, jint, jbyteArray);
 
+/*
+ * Class:     org_jitsi_impl_neomedia_imgstreaming_ScreenCapture
+ * Method:    grabWholeWindow
+ * Signature: (II[B)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCapture_grabWholeWindow
+  (JNIEnv *, jclass, jint, jint, jbyteArray);
+
+/*
+ * Class:     org_jitsi_impl_neomedia_imgstreaming_ScreenCapture
+ * Method:    getWindowAttributes
+ * Signature: (II)Lorg/jitsi/impl/neomedia/imgstreaming/Window;
+ */
+JNIEXPORT jobject JNICALL Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCapture_getWindowAttributes
+  (JNIEnv *, jclass, jint, jint);
+
 #ifdef __cplusplus
 }
 #endif

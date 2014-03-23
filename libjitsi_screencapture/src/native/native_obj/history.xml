@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <history>
    <processor signature="gcc noversion nomachine -D_XOPEN_SOURCE=600 -O3 -std=c99 -Wall -Wextra -m64 -I/usr/lib/jvm/java-7-oracle/include -I/usr/lib/jvm/java-7-oracle/include/linux -c -fPIC">
-      <target file="org_jitsi_impl_neomedia_imgstreaming_ScreenCapture.o" lastModified="144ed497c20">
-         <source file="../screencapture/org_jitsi_impl_neomedia_imgstreaming_ScreenCapture.c" lastModified="144ed4889f0"/>
+      <target file="org_jitsi_impl_neomedia_imgstreaming_ScreenCapture.o" lastModified="144ede54ad8">
+         <source file="../screencapture/org_jitsi_impl_neomedia_imgstreaming_ScreenCapture.c" lastModified="144ede50870"/>
       </target>
    </processor>
 </history>

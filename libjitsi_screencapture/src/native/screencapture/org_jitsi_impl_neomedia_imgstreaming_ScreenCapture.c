@@ -422,7 +422,6 @@ static int x11_print_available_windows(int displayIndex)
 }
 
 
-
 static int x11_grab_window(jbyte* data, unsigned int displayIndex, int windowId, int x, int y, int w, int h)
 {
 
@@ -472,7 +471,7 @@ static int x11_grab_window(jbyte* data, unsigned int displayIndex, int windowId,
   
   XTextProperty winname;
   XGetWMName(display, window, &winname);
-  fprintf(stderr,"Getting snapshot of of window named : %s \n",winname.value);
+  fprintf(stderr,"Getting snapshot of window named : %s \n",winname.value);
 
   
   /* check that user-defined parameters are in image */
@@ -595,7 +594,6 @@ static int x11_grab_window(jbyte* data, unsigned int displayIndex, int windowId,
   /* return array */
   return 0;
 }
-
 
 
 /**
@@ -922,7 +920,5 @@ Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCapture_grabWindow
   return JNI_TRUE;
 
 }
-
-
 
 
