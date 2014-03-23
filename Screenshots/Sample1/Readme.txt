@@ -1,4 +1,4 @@
-Main Class Name: src/jniex/Sample1.java
+Main Class Name: src/jniex/samples/Sample1.java
 
 Run the above class main method.Here I have included a set of screenshots for the output of above class's main() method.
 
