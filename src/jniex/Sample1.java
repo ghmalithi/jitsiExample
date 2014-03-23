@@ -65,19 +65,19 @@ public class Sample1
             {
                 Logger.getLogger(Sample1.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
-            }
+            }   
 
-        }
+        }    
         else
         {
-                return false;
+            return false;
         }
-    }
+    }   
     
     
     
-     public static boolean printWindowToImage(int window,int x,int y,int width,int height,String imagename)
-     {
+    public static boolean printWindowToImage(int window,int x,int y,int width,int height,String imagename)
+    {
         
         byte[] output=new byte[width*height*4];
         boolean b= ScreenCapture.grabWindow(0,window, x, y, width, height, output);
@@ -97,7 +97,7 @@ public class Sample1
               rgb[index--] = output[i - 2];
             }
 
-              OutputStream stream;
+            OutputStream stream;
 
             try 
             {
