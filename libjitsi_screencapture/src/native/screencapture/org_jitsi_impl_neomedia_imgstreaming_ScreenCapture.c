@@ -973,6 +973,20 @@ JNIEXPORT jobject JNICALL Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCaptur
 #elif defined(__APPLE__)
             /*not implemented*/
 #else /* Unix */
+              
+            const char* display_str; /* display string */
+            Display* display = NULL; /* X11 display */
+            char buf[16];
+            snprintf(buf, sizeof(buf), ":0.%u", display);
+            display_str = buf;
+
+            /* open current X11 display */
+            display = XOpenDisplay(display_str);
+            
+            XWindowAttributes wattr;
+            XGetWindowAttributes(display,windowid,&wattr);
+            width=wattr.width;
+            height=wattr.height;            
             
 #endif      
             jobject windowattrib = (*env)->NewObject(env, cls, midConstructor,windowid,width,height);
