@@ -80,12 +80,28 @@ public class ScreenCapture
             int display);
     
     
+    /**
+     * Grab a specific window and get raw bytes.
+     *
+     * @param display index of display
+     * @param window id of window
+     * @param x x position to start capture
+     * @param y y position to start capture
+     * @param width capture width
+     * @param height capture height
+     * @param output native output buffer to store screen bytes
+     * @return true if grab success, false otherwise
+     */
+    
     public static native boolean grabWindow(
             int display,int window,
             int x, int y, int width, int height,
             byte output[]);
     
     
+    /**
+     * Not implemented yet.
+     */
     public static native WindowAttributes getWindowAttributes(int display,int window);
 
 }

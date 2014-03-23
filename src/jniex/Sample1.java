@@ -1,9 +1,3 @@
-/*
- * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- *
- * Distributable under LGPL license.
- * See terms of license at gnu.org.
- */
 
 package jniex;
 
@@ -23,6 +17,14 @@ import org.jitsi.impl.neomedia.imgstreaming.*;
 public class Sample1 
 {
 
+    /**
+     * Creates an RGB <tt>BufferedImage</tt> from raw bytes.
+     *
+     * @param bytes raw bytes
+     * @param width capture width
+     * @param height capture height
+     * @return created <tt>BufferedImage</tt>
+     */
     private static BufferedImage createRGBImage(byte[] bytes, int width, int height) 
     {
         DataBufferByte buffer = new DataBufferByte(bytes, bytes.length);
@@ -30,6 +32,17 @@ public class Sample1
         return new BufferedImage(cm, Raster.createInterleavedRaster(buffer, width, height, width * 3, 3, new int[]{0, 1, 2}, null), false, null);
     }
  
+    
+    /**
+     * Grab desktop screen and creates a bitmap file.
+     *
+     * @param x x position to start capture
+     * @param y y position to start capture
+     * @param width capture width
+     * @param height capture height
+     * @param imagename output filename to store the image
+     * @return true if grab success, false otherwise
+     */
     public static boolean printRootScreenToImage(int x,int y,int width,int height,String imagename)
     {
         
@@ -71,6 +84,17 @@ public class Sample1
         }
     }   
       
+    /**
+    * Grab specific window and creates a bitmap file.
+    *
+    * @param window id of window to capture
+    * @param x x position to start capture
+    * @param y y position to start capture
+    * @param width capture width
+    * @param height capture height
+    * @param imagename output filename to store the image
+    * @return true if grab success, false otherwise
+    */
     public static boolean printWindowToImage(int window,int x,int y,int width,int height,String imagename)
     {
         
@@ -113,6 +137,11 @@ public class Sample1
         }
     }
     
+    /**
+    * Sample main method to get a screenshot of a specific window by its id
+    * specifing width and height. The captured image will be saved as a bmp file
+    * in project root folder(output.bmp)
+    */
     public static void main(String[] args) 
     {
 
