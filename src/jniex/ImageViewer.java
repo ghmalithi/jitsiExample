@@ -3,8 +3,7 @@
 package jniex;
 
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.*;
 import javax.imageio.*;
 import javax.swing.*;
