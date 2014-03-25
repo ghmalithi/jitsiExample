@@ -8,7 +8,7 @@ import org.jitsi.impl.neomedia.imgstreaming.*;
  *
  * @author malintha
  */
-public class DesktopManager {
+public class DesktopCaptureManager {
       
     /**
      * Grab desktop screen and creates a bitmap file.

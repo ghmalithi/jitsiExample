@@ -1,6 +1,9 @@
 package jniex.samples;
 
+
+import java.io.*;
 import java.util.*;
+import java.util.logging.*;
 import jniex.*;
 import org.jitsi.impl.neomedia.imgstreaming.*;
 
@@ -13,14 +16,15 @@ public class Sample2
    /**
      * main method
      * 
-     * @param args not used
      * 
-    * Sample main method to get a full screenshot of a specific window by its id.
-    * The captured image will be saved as a bmp file in project root folder(output.bmp)
-    * 
-    */
-    public static void main(String[] args) 
+     * Sample main method to get a full screenshot of a specific window by its id.
+     * The captured image will be saved as a bmp file in project root folder(output.bmp)
+     * 
+     */
+    public void run() 
     {
+        
+        System.out.println("\n****** Running Sample 2 *********\n");
 
         Scanner s=new Scanner(System.in);
         
@@ -29,7 +33,14 @@ public class Sample2
         System.out.println("--------------------------------------------");
         
         ScreenCapture.printAvailableWindowNames(0);
-
+       
+        try 
+        {
+            Thread.sleep(500);
+        } catch (InterruptedException ex) 
+        {            
+        }
+               
         System.out.println("--------------------------------------------");       
         System.out.print("\nPlease enter the Window ID you want to take the screen shot :");       
         String id=s.next();
@@ -40,9 +51,17 @@ public class Sample2
         int width=wattr.getWidth();
         int height=wattr.getHeight();
               
-        if(DesktopManager.printWindowToImage(windowid,0,0,width,height,"output.bmp"))
+        if(DesktopCaptureManager.printWindowToImage(windowid,0,0,width,height,"output.bmp"))
         {
             System.out.println("Print screen success.");
+            
+            ImageViewer mainFrame;
+            try {
+                mainFrame = new ImageViewer("output.bmp");
+                mainFrame.setVisible(true);
+            } catch (IOException ex) {
+                Logger.getLogger(Sample1.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         else
         {
