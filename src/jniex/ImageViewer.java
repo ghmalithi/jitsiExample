@@ -3,6 +3,8 @@
 package jniex;
 
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.*;
 import javax.imageio.*;
 import javax.swing.*;
@@ -31,6 +33,16 @@ public class ImageViewer extends JFrame
 		scrollPane = new JScrollPane();
 		scrollPane.getViewport().add( label );
 		topPanel.add( scrollPane, BorderLayout.CENTER );
+                
+                super.addWindowListener(new WindowAdapter()
+                {
+                    @Override
+                    public void windowClosing(WindowEvent e)
+                    {
+                        e.getWindow().dispose();
+                    }
+                }
+                );
 	}
 
 }

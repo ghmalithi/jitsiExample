@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <history>
    <processor signature="gcc -m64 -Wl,--no-undefined -shared -lX11 -lXext">
-      <target file="libjnscreencapture.so" lastModified="144f09f1790">
-         <source file="../../../libjitsi_screencapture/src/native/native_obj/org_jitsi_impl_neomedia_imgstreaming_ScreenCapture.o" lastModified="144f09f13a8"/>
+      <target file="libjnscreencapture.so" lastModified="144fa608f20">
+         <source file="../../../libjitsi_screencapture/src/native/native_obj/org_jitsi_impl_neomedia_imgstreaming_ScreenCapture.o" lastModified="144fa608f20"/>
       </target>
    </processor>
 </history>

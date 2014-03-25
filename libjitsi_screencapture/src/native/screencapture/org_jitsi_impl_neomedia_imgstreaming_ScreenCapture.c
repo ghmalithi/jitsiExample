@@ -372,22 +372,30 @@ static int quartz_grab_screen(jbyte* data, unsigned int display, int x, int y, i
  * This method is influenced from  
  * http://bisqwit.iki.fi/source/xgetimage.html-> xgetimage-1.5.0 -> x.cc -> XListWindows() 
  * method. Since it prints a lot of unwanted windows, I have made a little modification using 
- * XGetWindowAttributes() to filter most of them out.
+ * XGetWindowAttributes() and absolute x,y values to filter most of them away.
  */
-static void XListWindows(Display *display, const Window window)
+static void XListWindows(Display *display,int scr_width,int scr_height,const Window window)
 {
     unsigned int num_children;
     Window *children, child;
     XTextProperty windowname;
     XWindowAttributes wattr;
+    int abs_x,abs_y;
+    Window tempwin;
 
     if(XGetWMName(display, window, &windowname) != 0)
     {
             XGetWindowAttributes(display,window,&wattr);
-            if(wattr.map_state==IsViewable)
+            
+            XTranslateCoordinates (display, window, wattr.root, 
+				-wattr.border_width,
+				-wattr.border_width,
+				&abs_x, &abs_y, &tempwin);
+            
+            //Filtering away unwanted windows
+            if(wattr.map_state==IsViewable && abs_x>=0 && abs_x<scr_width && abs_y>=0 && abs_y<scr_height && wattr.x>=0 && wattr.y>=0)
             {
-                fprintf(stderr,"0x%x      : %s\n",window,windowname.value);
-                
+                fprintf(stderr,"0x%x      : %s\n",window,windowname.value);                
             }
     }
     
@@ -397,7 +405,7 @@ static void XListWindows(Display *display, const Window window)
         for(i=0; i < num_children; ++i)
         {
             /* Search each child and their children. */
-            XListWindows(display, children[i]);
+            XListWindows(display,scr_width,scr_height, children[i]);
         }
         if (children != (Window *)NULL)
             XFree((void *)children);
@@ -411,7 +419,8 @@ static int x11_print_available_windows(int displayIndex)
 
   const char* display_str; /* display string */
   Display* display = NULL; /* X11 display */
-  int screen = 0; /* X11 screen */
+  int screen=0; /* X11 screen */
+  Screen* scr;
   Window root_window = 0; /* X11 root window of a screen */
   char buf[16];
   
@@ -427,10 +436,13 @@ static int x11_print_available_windows(int displayIndex)
     return -1;
   }
 
+  scr = DefaultScreenOfDisplay(display);
+  //fprintf(stderr,"Screen Resolution : %dX%d \n",scr->width,scr->height);
+  
   root_window = RootWindow(display, screen);
   
-  XListWindows(display,root_window);
-  
+  XListWindows(display,scr->width,scr->height,root_window);
+  return 0;
 }
 
 
@@ -453,7 +465,6 @@ static int x11_grab_window(jbyte* data, unsigned int displayIndex, int windowId,
   size_t off = 0;
   int i = 0;
   int j = 0;
-  size_t size = 0;
   uint32_t test = 1;
   int little_endian = *((uint8_t*)&test);
   char buf[16];
@@ -494,8 +505,6 @@ static int x11_grab_window(jbyte* data, unsigned int displayIndex, int windowId,
     XCloseDisplay(display);
     return -1;
   }
-
-  size = w * h;
 
   /* test is XServer support SHM */
   shm_support = XShmQueryExtension(display);
@@ -539,7 +548,7 @@ static int x11_grab_window(jbyte* data, unsigned int displayIndex, int windowId,
       shm_support = 0;
     }
     //else if(!XShmGetImage(display, ww, img, x, y, 0xffffffff))
-    else if(!XShmGetImage(display, window, img, 0, 0, AllPlanes))
+    else if(!XShmGetImage(display, window, img, 0, 0, 0xffffffff))
     {
 
       fprintf(stderr, "Cannot grab image!\n");
@@ -640,7 +649,6 @@ static int x11_grab_screen(jbyte* data, unsigned int displayIndex, int x, int y,
   size_t off = 0;
   int i = 0;
   int j = 0;
-  size_t size = 0;
   uint32_t test = 1;
   int little_endian = *((uint8_t*)&test);
   char buf[16];
@@ -678,7 +686,6 @@ static int x11_grab_screen(jbyte* data, unsigned int displayIndex, int x, int y,
     return -1;
   }
 
-  size = w * h;
 
   /* test is XServer support SHM */
   shm_support = XShmQueryExtension(display);
@@ -980,7 +987,7 @@ Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCapture_grabWindow
  * \return WindowAttributes Object if success, NULL otherwise
  */
 JNIEXPORT jobject JNICALL Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCapture_getWindowAttributes
-  (JNIEnv* env, jclass clazz, jint display,jint windowid)
+  (JNIEnv* env, jclass clazz, jint displayid,jint windowid)
 {
     
     int width=0,height=0;
@@ -1003,7 +1010,7 @@ JNIEXPORT jobject JNICALL Java_org_jitsi_impl_neomedia_imgstreaming_ScreenCaptur
             const char* display_str; /* display string */
             Display* display = NULL; /* X11 display */
             char buf[16];
-            snprintf(buf, sizeof(buf), ":0.%u", display);
+            snprintf(buf, sizeof(buf), ":0.%u", displayid);
             display_str = buf;
 
             /* open current X11 display */
