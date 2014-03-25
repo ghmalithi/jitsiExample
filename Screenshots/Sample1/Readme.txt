@@ -1,5 +1,5 @@
 Sample1 : To get a screenshot of a specific window by its ID specifing width and height
-------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
 
 Class Name: src/jniex/samples/Sample1.java
 

@@ -1,5 +1,5 @@
 2) Sample2 : To get a full screenshot of a specific window by its ID.
---------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
 
 Class Name: src/jniex/samples/Sample2.java
 
