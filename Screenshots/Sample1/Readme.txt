@@ -1,8 +1,13 @@
-Main Class Name: src/jniex/samples/Sample1.java
+Class Name: src/jniex/samples/Sample1.java
 
-Run the above class main method.Here I have included a set of screenshots for the output of above class's main() method.
+1) To run the sample, cd to ./distribution folder and execute
 
-1) First it shows a list of all available windows.
-2) Enter the id of the window you want to get the screen shot.
-3) Enter width and height. They should be less than respective width and height of the window specified above.
-4) See the output.bmp in the project root folder(Here it is JitsiExample folder).
+java -Djava.library.path="../lib/native/linux-64" -jar JitsiScreenCapture.jar
+
+2) Select the sample number as 1. 
+
+3) It will show a list of available windows.Enter the id of the window you want to get the screen shot.
+
+4) Enter width and height. They should be less than respective width and height of the window specified above.
+
+5) If printscreen of the window success, the image will be automatically previewed.
