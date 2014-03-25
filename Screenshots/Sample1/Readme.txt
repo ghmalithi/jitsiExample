@@ -1,3 +1,6 @@
+Sample1 : To get a screenshot of a specific window by its ID specifing width and height
+------------------------------------------------------------------------------------------
+
 Class Name: src/jniex/samples/Sample1.java
 
 1) To run the sample, cd to ./distribution folder and execute

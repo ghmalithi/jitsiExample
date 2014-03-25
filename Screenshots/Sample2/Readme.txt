@@ -1,3 +1,6 @@
+2) Sample2 : To get a full screenshot of a specific window by its ID.
+--------------------------------------------------------------------------------
+
 Class Name: src/jniex/samples/Sample2.java
 
 1) To run the sample, cd to ./distribution folder and execute
